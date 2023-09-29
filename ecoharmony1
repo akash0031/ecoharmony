@@ -1,0 +1,69 @@
+import random
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.energy = 100
+        self.eco_score = 0
+
+    def take_action(self):
+        action = input(f"{self.name}, what would you like to do? (work/harvest/rest/quit): ").lower()
+        return action
+
+class EcoHarmonyGame:
+    def __init__(self):
+        self.players = []
+        self.turn = 1
+        self.is_game_over = False
+
+    def add_player(self, player):
+        self.players.append(player)
+
+    def game_loop(self):
+        while not self.is_game_over:
+            print(f"\n--- Turn {self.turn} ---")
+            for player in self.players:
+                if player.energy <= 0:
+                    continue
+                
+                action = player.take_action()
+
+                if action == "work":
+                    eco_points = random.randint(5, 15)
+                    player.eco_score += eco_points
+                    player.energy -= 10
+                    print(f"{player.name} worked and earned {eco_points} eco points.")
+                elif action == "harvest":
+                    eco_points = random.randint(1, 10)
+                    player.eco_score += eco_points
+                    player.energy -= 5
+                    print(f"{player.name} harvested and earned {eco_points} eco points.")
+                elif action == "rest":
+                    player.energy += 15
+                    print(f"{player.name} rested and regained energy.")
+                elif action == "quit":
+                    self.is_game_over = True
+                    break
+                else:
+                    print("Invalid action. Please choose from work, harvest, rest, or quit.")
+
+                if player.energy <= 0:
+                    print(f"{player.name} has run out of energy and can't take any more actions.")
+
+            self.turn += 1
+
+if __name__ == "__main__":
+    num_players = int(input("Enter the number of players: "))
+    game = EcoHarmonyGame()
+
+    for i in range(num_players):
+        name = input(f"Enter the name of Player {i + 1}: ")
+        player = Player(name)
+        game.add_player(player)
+
+    game.game_loop()
+
+    print("\n--- Game Over ---")
+    for player in game.players:
+        print(f"{player.name} earned {player.eco_score} eco points.")
+
